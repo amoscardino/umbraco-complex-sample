@@ -1,0 +1,18 @@
+﻿@using Markdig
+@inherits UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    var title = Model.Value<string>("title");
+    var pipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .UseBootstrap()
+        .Build();
+    var body = Markdown.ToHtml(Model.Value<string>("postContent") ?? string.Empty, pipeline);
+}
+
+<h1 class="display-5">
+    @title
+</h1>
+
+@Html.Raw(body)

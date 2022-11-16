@@ -1,0 +1,81 @@
+﻿@inherits UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    var title = Model.Value<string>("Title");
+    var body = Model.Value<string>("Body");
+
+    const int pageSize = 25;
+    var page = ViewContext.HttpContext.Request.Query.TryGetValue("page", out var p) 
+        ? int.TryParse(p, out var p1) 
+            ? p1
+             : 1 
+        : 1;
+
+    var allPosts = (Model.Children() ?? Enumerable.Empty<IPublishedContent>())
+        .OrderByDescending(x => x.Value<DateTime>("Date"))
+        .ThenBy(x => x.SortOrder)
+        .ToList();
+
+    var posts = allPosts
+        .Skip((page-1) * pageSize)
+        .Take(pageSize)
+        .ToList();
+
+    var isFirstPage = page == 1;
+    var isLastPage = page == Math.Ceiling((double)allPosts.Count / pageSize);
+}
+
+<div class="p-5 mb-4 text-bg-dark rounded-3 shadow">
+    <div class="container-fluid">
+        <h1 class="display-6 fw-bold mb-3">@title</h1>
+        <p class="col-md-8 fs-5 mb-0">@Html.ReplaceLineBreaks(body ?? string.Empty)</p>
+    </div>
+</div>
+
+<div class="list-group shadow w-100 mb-4">
+    @foreach (var post in posts)
+    {
+        var postTitle = post.Value<string>("Title");
+        var postDate = post.Value<DateTime>("Date");
+        var postSummary = post.Value<string>("Summary");
+
+        <a href="@post.Url()" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">@postTitle</h5>
+                <small>@postDate.ToShortDateString()</small>
+            </div>
+            <p class="mb-1">@postSummary</p>
+        </a>
+    }
+</div>
+
+<nav class="mb-4">
+    <ul class="pagination justify-content-center">
+        @if (isFirstPage)
+        {
+            <li class="page-item disabled">
+                <a class="page-link">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Model.Url()?page=@(page - 1)">Previous</a>
+            </li>
+        }
+
+        @if (isLastPage)
+        {
+            <li class="page-item disabled">
+                <a class="page-link">Next</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Model.Url()?page=@(page + 1)">Next</a>
+            </li>
+        }
+    </ul>
+</nav>

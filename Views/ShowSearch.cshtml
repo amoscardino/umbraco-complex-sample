@@ -1,0 +1,39 @@
+﻿@inherits UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+
+    var title = Model.Value<string>("Title");
+    var body = Model.Value<string>("Body");
+
+    var searchModel = new ShowSearchFormModel();
+}
+
+<div class="p-5 mb-4 text-bg-dark rounded-3 shadow">
+    <div class="container-fluid">
+        <h1 class="display-6 fw-bold mb-3">@title</h1>
+        <p class="col-md-8 fs-5 mb-0">@Html.Raw(body ?? string.Empty)</p>
+    </div>
+</div>
+
+<partial name="_ShowSearchForm" model="searchModel" />
+
+<div id="ShowSearchResults">
+    @* JS will populate results here *@
+</div>
+
+<script>
+    document.getElementById('ShowSearchForm').addEventListener('submit', (e) => {
+        const form = document.getElementById('ShowSearchForm');
+        const results = document.getElementById('ShowSearchResults');
+
+        const url = new URL(form.action);
+        url.search = new URLSearchParams(new FormData(form)).toString();
+
+        fetch(url, { method: form.method })
+            .then(res => res.text())
+            .then(res => results.innerHTML = res)
+            .catch(error => console.log(error));
+
+        e.preventDefault();
+    })
+</script>

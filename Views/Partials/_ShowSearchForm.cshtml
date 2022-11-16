@@ -1,0 +1,17 @@
+@model ShowSearchFormModel
+
+@using (Html.BeginUmbracoForm("Search", "ShowSearchSurface", new { }, new { id = "ShowSearchForm", @class = "border rounded shadow mb-4 p-3" }, FormMethod.Get))
+{
+    <div class="row">
+        <div class="col">
+            <label asp-for="SearchTerm" class="visually-hidden">Search Term</label>
+            <input asp-for="SearchTerm" class="form-control" />
+        </div>
+
+        <div class="col-2 d-flex flex-column justify-content-end">
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+        </div>
+    </div>
+}

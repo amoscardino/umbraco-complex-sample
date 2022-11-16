@@ -1,0 +1,62 @@
+@inherits UmbracoViewPage
+@{
+    var menuItems = Model.Root()!.Children(x => x.Value<bool>("IncludeInMainMenu"))
+            ?? Enumerable.Empty<IPublishedContent>();
+}
+
+<div class="container mt-3 mb-5">
+    <nav class="navbar navbar-expand-lg bg-white border shadow rounded">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                Umbraco Complex Sample
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#MainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="MainNav">
+                <ul class="navbar-nav">
+                    @foreach (var menuItem in menuItems)
+                    {
+                        var name = menuItem.Value("MainMenuName", fallback: Fallback.ToDefaultValue, defaultValue: menuItem.Name);
+                        var activeClass = Model.Parent != null && menuItem.IsDescendantOrSelf(Model) ? "active" : string.Empty;
+                        var childItems = menuItem.Children(x => x.Value<bool>("IncludeInMainMenu"))
+                                ?? Enumerable.Empty<IPublishedContent>();
+
+                        if (childItems.Any())
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle @activeClass" href="@menuItem.Url()" data-bs-toggle="dropdown">
+                                    @name
+                                </a>
+
+                                <ul class="dropdown-menu">
+                                    @foreach(var childItem in childItems)
+                                    {
+                                        var childName = childItem.Value("MainMenuName", fallback: Fallback.ToDefaultValue, defaultValue: childItem.Name);
+                                        var childActiveClass = Model.Parent != null & childItem.IsDescendantOrSelf(Model) ? "active" : string.Empty;
+
+                                        <li>
+                                            <a class="dropdown-item @childActiveClass" href="@childItem.Url()">
+                                                @childName
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        else 
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @activeClass" href="@menuItem.Url()">
+                                    @name
+                                </a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

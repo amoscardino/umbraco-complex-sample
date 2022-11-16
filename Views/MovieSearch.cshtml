@@ -1,0 +1,14 @@
+﻿@inherits UmbracoViewPage<MovieSearchModel>
+@{
+    Layout = "Master.cshtml";
+}
+
+<div class="p-5 mb-4 text-bg-dark rounded-3 shadow">
+    <div class="container-fluid">
+        <h1 class="display-6 fw-bold mb-3">@Model.Title</h1>
+        <p class="col-md-8 fs-5 mb-0">@Html.Raw(Model.Body)</p>
+    </div>
+</div>
+
+<partial name="_MovieSearchForm" model="Model.SearchForm" />
+<partial name="_MovieSearchResults" model="Model.Results" />

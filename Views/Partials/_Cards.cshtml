@@ -1,0 +1,41 @@
+﻿@using Umbraco.Cms.Core.Models
+@model IPublishedContent
+@{
+    var cards = Model.Value<IEnumerable<IPublishedElement>>("Cards") ?? Enumerable.Empty<IPublishedElement>();
+}
+
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+    @foreach (var card in cards)
+    {
+        var image = card.Value<MediaWithCrops>("Image");
+        var title = card.Value<string>("Title");
+        var body = card.Value<string>("Body");
+        var buttons = card.Value<IEnumerable<Link>>("Buttons") ?? Enumerable.Empty<Link>();
+
+        <div class="col">
+            <div class="card h-100 shadow">
+                @if (image != null)
+                {
+                    <img src="@image.MediaUrl()" class="card-img-top">
+                }
+
+                <div class="card-body">
+                    <h5 class="card-title">@title</h5>
+                    <div class="card-text">@Html.Raw(body)</div>
+
+                    @if (buttons.Any())
+                    {
+                        <div class="d-flex justify-content-evenly gap-3">
+                            @foreach(var button in buttons)
+                            {
+                                <a href="@button.Url" target="@button.Target" class="btn btn-outline-primary flex-fill">
+                                    @button.Name
+                                </a>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

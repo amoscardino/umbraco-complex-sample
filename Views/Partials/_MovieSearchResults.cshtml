@@ -1,0 +1,29 @@
+@model List<TMDbLib.Objects.Search.SearchMovie>
+
+<ul class="list-group shadow w-100 mb-4">
+    @foreach (var result in Model)
+    {
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-2">
+                    @if (!string.IsNullOrWhiteSpace(result.PosterPath))
+                    {
+                        <img src="@result.PosterPath" class="img-fluid img-thumbnail mb-3 shadow" />
+                    }
+                </div>
+
+                <div class="col">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h3 class="mb-1">@result.Title</h3>
+
+                        @if (result.ReleaseDate != null)
+                        {
+                            <small>@result.ReleaseDate.Value.Year</small>
+                        }
+                    </div>
+                    <p class="mb-1">@result.Overview</p>
+                </div>
+            </div>
+        </li>
+    }
+</ul>

@@ -1,0 +1,21 @@
+﻿@using Umbraco.Cms.Core.Models
+@model IPublishedContent
+@{
+    var jumbotronTitle = Model.Value<string>("JumbotronTitle");
+    var jumbotronBody = Model.Value<string>("JumbotronBody");
+    var jumbotronButton = Model.Value<Link>("JumbotronButton");
+}
+
+<div class="p-5 mb-4 text-bg-dark rounded-3 shadow">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">@jumbotronTitle</h1>
+        <p class="col-md-8 fs-4">@Html.ReplaceLineBreaks(jumbotronBody ?? string.Empty)</p>
+
+        @if (jumbotronButton != null)
+        {
+            <a href="@jumbotronButton.Url" target="@jumbotronButton.Target" class="btn btn-primary btn-lg">
+                @jumbotronButton.Name
+            </a>
+        }
+    </div>
+</div>
